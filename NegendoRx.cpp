@@ -32,7 +32,7 @@ void NegendoRx::convertAdd()
 	Serial.println((unsigned long)_AddRandom, 16); 
 	Serial.println("Ready to receive data");
 }
-void NegendoRx::setAdddress()
+void NegendoRx::setAddress()
 {
 	if(!digitalRead(SET))
 	{
@@ -51,7 +51,7 @@ void NegendoRx::setAdddress()
 				if(radio.available())
 				{
 					radio.read(_Add, sizeof(_Add));
-					_address = _SAdd[0];
+					_address = _Add[0];
 					EEPROM.write(0,_address);
 					Serial.println("Set address done.");
 					break;
@@ -102,15 +102,15 @@ void NegendoRx::stop()
 }
 void NegendoRx::moveForward(int speed)
 {
-	int movespeed = speed*255/100; 
-	runM1(movespeed);
-	runM2(movespeed);
+	int speedMotor = speed*255/100; 
+	runM1(speedMotor);
+	runM2(speedMotor);
 }
 void NegendoRx::moveBackward(int speed)
 {
-	int movespeed = speed*255/100;
-	runM1(-movespeed);
-	runM2(-movespeed);
+	int speedMotor = speed*255/100;
+	runM1(-speedMotor);
+	runM2(-speedMotor);
 }
 void NegendoRx::moveForward(int M1speed, int M2speed)
 {
@@ -119,7 +119,42 @@ void NegendoRx::moveForward(int M1speed, int M2speed)
 	runM1(speedM1);
 	runM2(speedM2);
 }
-void NegendoRx::setServo(int sv, int Angle);
+void NegendoRx::Forward(int speed, int Angle)
+{
+	int speedMotor = speed*255/100; 
+	runM1(speedMotor);
+	runM2(speedMotor);
+	setServo(1, Angle);
+}
+void NegendoRx::moveRight(int speed)
+{
+	int speedMotor = speed*255/100;
+	runM1(speedMotor);
+	runM2(speedMotor);
+	setServo(1, Right_angle);
+}
+void NegendoRx::moveLeft(int speed)
+{
+	int speedMotor = speed*255/100;
+	runM1(speedMotor);
+	runM2(speedMotor);
+	setServo(1, Left_angle);
+}
+void NegendoRx::moveBackRight(int speed)
+{
+	int speedMotor = speed*255/100;
+	runM1(-speedMotor);
+	runM2(-speedMotor);
+	setServo(1, Right_angle);
+}
+void NegendoRx::moveBackLeft(int speed)
+{
+	int speedMotor = speed*255/100;
+	runM1(-speedMotor);
+	runM2(-speedMotor);
+	setServo(1, Left_angle);
+}
+void NegendoRx::setServo(int sv, int Angle)
 {
 	if(sv = 1)
 	{
