@@ -54,19 +54,24 @@ void NegendoRx::setAddress()
 					_address = _Add[0];
 					EEPROM.write(0,_address);
 					Serial.println("Set address done.");
+					tick(3,1000,200);
 					break;
 				}
 			}
 			convertAdd();
 		}
 		else
+		{
 			Serial.println("No change of address.");
+			tick(1,1000,1000);
+		}
+
 	}
 }
 void NegendoRx::runM1(int speed)
 {
-	speed = speed > 255 ? 255 : speed;   // if speed > 255 -> speed = 255
-	speed = speed < -255 ? -255 : speed; // if speed < -255 -> speed = -255
+	speed = speed > 255 ? 255 : speed;   // if speed > 255 => speed = 255
+	speed = speed < -255 ? -255 : speed; // if speed < -255 => speed = -255
 	if(speed >= 0)
 	{
 		analogWrite(motor1A,speed);
