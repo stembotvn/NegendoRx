@@ -1,0 +1,26 @@
+NegendoRx	KEYWORD1
+Negendo	KEYWORD1
+init 	KEYWORD1
+begin	KEYWORD1
+bip	KEYWORD2
+blinks	KEYWORD2
+readButton	KEYWORD2
+setAddress	KEYWORD2
+convertAdd	KEYWORD2
+moveForward	KEYWORD2
+Forward	KEYWORD2
+moveBackward	KEYWORD2
+moveRight	KEYWORD2
+moveLeft	KEYWORD2
+moveBackRight	KEYWORD2
+moveBackLeft	KEYWORD2
+stop	KEYWORD2
+setServo1	KEYWORD2
+setServo2	KEYWORD2
+tones	KEYWORD2
+tick	KEYWORD2
+onLed	KEYWORD2
+offLed	KEYWORD2
+Sound	KEYWORD2
+sing	KEYWORD2
+

@@ -38,15 +38,22 @@ void NegendoRx::setAddress()
 	{
 		Serial.println("Set Address");
 		Serial.println("Wait 5s...");
+		_oldAdd = EEPROM.read(0);
 		_startTime = millis();
-		while(!digitalRead(SET));
+		while(!digitalRead(SET))
+		{
+			if(millis() - _startTime == 5000)
+			{
+				Sound.sing(S_mode3);
+			}
+		}
 		_duration = millis() - _startTime;
 		if(_duration > 5000)
 		{
 			radio.openReadingPipe(1,_AddDefault);
 			radio.startListening();
 			Serial.println("Ready to receive new address...");
-			for(unsigned long starts = millis(); (millis() - starts) < _timeout;)
+			for(unsigned long starts =  millis(); (millis() - starts) < _timeout;)
 			{
 				if(radio.available())
 				{
@@ -54,18 +61,23 @@ void NegendoRx::setAddress()
 					_address = _Add[0];
 					EEPROM.write(0,_address);
 					Serial.println("Set address done.");
-					tick(3,1000,200);
+					Sound.sing(S_connection);
 					break;
 				}
+			}
+			_newAdd = EEPROM.read(0);
+			if(_oldAdd == _newAdd || _newAdd == 01)
+			{
+				Serial.println("The address doesn't change.");
+				Sound.sing(S_cuddly);
 			}
 			convertAdd();
 		}
 		else
 		{
-			Serial.println("No change of address.");
-			tick(1,1000,1000);
+			Serial.println("The address doesn't change.");
+			Sound.sing(S_cuddly);
 		}
-
 	}
 }
 void NegendoRx::runM1(int speed)
@@ -129,50 +141,59 @@ void NegendoRx::Forward(int speed, int Angle)
 	int speedMotor = speed*255/100; 
 	runM1(speedMotor);
 	runM2(speedMotor);
-	setServo(1, Angle);
+	setServo1(Angle);
 }
 void NegendoRx::moveRight(int speed)
 {
 	int speedMotor = speed*255/100;
 	runM1(speedMotor);
 	runM2(speedMotor);
-	setServo(1, Right_angle);
+	setServo1(Right_angle);
 }
 void NegendoRx::moveLeft(int speed)
 {
 	int speedMotor = speed*255/100;
 	runM1(speedMotor);
 	runM2(speedMotor);
-	setServo(1, Left_angle);
+	setServo1(Left_angle);
 }
 void NegendoRx::moveBackRight(int speed)
 {
 	int speedMotor = speed*255/100;
 	runM1(-speedMotor);
 	runM2(-speedMotor);
-	setServo(1, Right_angle);
+	setServo1(Right_angle);
 }
 void NegendoRx::moveBackLeft(int speed)
 {
 	int speedMotor = speed*255/100;
 	runM1(-speedMotor);
 	runM2(-speedMotor);
-	setServo(1, Left_angle);
+	setServo1(Left_angle);
 }
-void NegendoRx::setServo(int sv, int Angle)
+void NegendoRx::turnRight(int speed)
 {
-	if(sv = 1)
-	{
-		servo1.attach(servo1_pin);
-		servo1.write(Angle);
-	}
-	else if(sv = 2)
-	{
-		servo2.attach(servo2_pin);
-		servo2.write(Angle);
-	}
+	int speedMotor = speed*255/100;
+	runM1(-speedMotor);
+	runM2(speedMotor);
 }
-void NegendoRx::tone(uint16_t frequency, uint32_t duration)
+void NegendoRx::turnLeft(int speed)
+{
+	int speedMotor = speed*255/100;
+	runM1(speedMotor);
+	runM2(-speedMotor);
+}
+void NegendoRx::setServo1(int Angle)
+{
+	servo1.attach(servo1_pin);
+	servo1.write(Angle);
+}
+void NegendoRx::setServo2(int Angle)
+{
+	servo2.attach(servo2_pin);
+	servo2.write(Angle);
+}
+void NegendoRx::tones(uint16_t frequency, uint32_t duration)
 {
 	int period = 1000000L / frequency;
 	int pulse = period / 2;
@@ -187,8 +208,8 @@ void NegendoRx::tone(uint16_t frequency, uint32_t duration)
 void NegendoRx::tick(int n, uint16_t frequency, int times)
 {
 	for(int i=0; i<n; i++)
-	{
-		tone(frequency, times);
+	{  
+		tones(frequency, times);
 		digitalWrite(buzzer, LOW);
 		delay(times);
 	}

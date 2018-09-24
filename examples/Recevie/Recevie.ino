@@ -57,7 +57,6 @@ void readRadio()
     speaker = Data[6];
     speeds = Data[7];
     Speed = speeds/1024*100;
-    updated = 0;
   }
   Move();
 }
@@ -68,6 +67,5 @@ void setup()
 void loop()
 {
   Negendo.setAddress();
-  readRadio();
 }
 
